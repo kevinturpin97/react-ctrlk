@@ -1,6 +1,6 @@
 {
   "name": "react-ctrlk",
-  "version": "1.0.0",
+  "version": "1.1.5",
   "description": "A plug-and-play React hook for keyboard shortcuts like Cmd+K",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
