@@ -35,12 +35,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kevinturpin97/react-ctrl-k.git"
+    "url": "git+https://github.com/kevinturpin97/react-ctrlk.git"
   },
   "bugs": {
-    "url": "https://github.com/kevinturpin97/react-ctrl-k/issues"
+    "url": "https://github.com/kevinturpin97/react-ctrlk/issues"
   },
-  "homepage": "https://github.com/kevinturpin97/react-ctrl-k#readme",
+  "homepage": "https://github.com/kevinturpin97/react-ctrlk#readme",
   "peerDependencies": {
     "react": ">=16.8.0",
     "react-dom": ">=16.8.0"
