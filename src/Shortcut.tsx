@@ -1,26 +1,26 @@
 import { createContext, useCallback, useContext, useEffect, useRef } from 'react';
-import type { ShortcutContextValue, ShortcutProviderProps, KeyboardShortcut } from './types';
+import type { ShortcutContextValue, ShortcutProps, KeyboardShortcut } from './types';
 
 const ShortcutContext = createContext<ShortcutContextValue | null>(null);
 
 /**
- * Provider component that enables keyboard shortcut functionality.
- * Wrap your application or a portion of it with this provider to use the useShortcut hook.
+ *  Provider component that enables keyboard shortcut functionality.
+ * Wrap your application or a portion of it with this  to use the useShortcut hook.
  *
  * @example
  * ```tsx
- * import { ShortcutProvider } from 'ctrl-k';
+ * import { Shortcut } from 'ctrl-k';
  *
  * function App() {
  *   return (
- *     <ShortcutProvider>
+ *     <Shortcut>
  *       <YourApp />
- *     </ShortcutProvider>
+ *     </Shortcut>
  *   );
  * }
  * ```
  */
-export function ShortcutProvider({ children }: ShortcutProviderProps): React.ReactElement {
+export function Shortcut({ children }: ShortcutProps): React.ReactElement {
   const shortcutsRef = useRef<Map<string, KeyboardShortcut>>(new Map());
 
   const registerShortcut = useCallback((id: string, shortcut: KeyboardShortcut) => {
@@ -102,15 +102,15 @@ export function ShortcutProvider({ children }: ShortcutProviderProps): React.Rea
 
 /**
  * Hook to access the Shortcut context.
- * Must be used within a ShortcutProvider.
+ * Must be used within a Shortcut.
  *
  * @returns The Shortcut context value
- * @throws Error if used outside of ShortcutProvider
+ * @throws Error if used outside of Shortcut
  */
 export function useShortcutContext(): ShortcutContextValue {
   const context = useContext(ShortcutContext);
   if (!context) {
-    throw new Error('useShortcutContext must be used within a ShortcutProvider');
+    throw new Error('useShortcutContext must be used within a Shortcut');
   }
   return context;
 }

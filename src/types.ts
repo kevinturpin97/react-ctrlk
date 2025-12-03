@@ -38,7 +38,7 @@ export interface KeyboardShortcut {
 }
 
 /**
- * Context value provided by ShortcutProvider
+ * Context value provided by Shortcut
  */
 export interface ShortcutContextValue {
   /**
@@ -56,11 +56,11 @@ export interface ShortcutContextValue {
 }
 
 /**
- * Props for the ShortcutProvider component
+ * Props for the Shortcut component
  */
-export interface ShortcutProviderProps {
+export interface ShortcutProps {
   /**
-   * Children to render within the provider
+   * Children to render within the 
    */
   children: React.ReactNode;
 }
