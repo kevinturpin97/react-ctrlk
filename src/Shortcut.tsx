@@ -4,21 +4,7 @@ import type { ShortcutContextValue, ShortcutProps, KeyboardShortcut } from './ty
 const ShortcutContext = createContext<ShortcutContextValue | null>(null);
 
 /**
- *  Provider component that enables keyboard shortcut functionality.
- * Wrap your application or a portion of it with this  to use the useShortcut hook.
- *
- * @example
- * ```tsx
- * import { Shortcut } from 'ctrl-k';
- *
- * function App() {
- *   return (
- *     <Shortcut>
- *       <YourApp />
- *     </Shortcut>
- *   );
- * }
- * ```
+ * Provider component that enables keyboard shortcut functionality.
  */
 export function Shortcut({ children }: ShortcutProps): React.ReactElement {
   const shortcutsRef = useRef<Map<string, KeyboardShortcut>>(new Map());
@@ -34,16 +20,30 @@ export function Shortcut({ children }: ShortcutProps): React.ReactElement {
   const setShortcutEnabled = useCallback((id: string, enabled: boolean) => {
     const shortcut = shortcutsRef.current.get(id);
     if (shortcut) {
-      shortcutsRef.current.set(id, { ...shortcut, enabled });
+      // Update the enabled state inside the options object, preserving other options
+      shortcutsRef.current.set(id, { 
+        ...shortcut, 
+        options: { ...shortcut.options, enabled } 
+      });
     }
   }, []);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       shortcutsRef.current.forEach((shortcut) => {
+        const options = shortcut.options || {};
 
-        if (shortcut.enabled === false) {
+        // Check if enabled (default true)
+        if (options.enabled === false) {
           return;
+        }
+
+        // Check for ref scope
+        // If a ref is provided, the event target must be contained within that element
+        if (options.ref && options.ref.current) {
+           if (event.target instanceof Node && !options.ref.current.contains(event.target)) {
+             return;
+           }
         }
 
         const keyMatches = event.key.toLowerCase() === shortcut.key.toLowerCase();
@@ -68,11 +68,13 @@ export function Shortcut({ children }: ShortcutProps): React.ReactElement {
           return;
         }
 
-        if (shortcut.preventDefault !== false) {
+        // Check preventDefault (default true)
+        if (options.preventDefault !== false) {
           event.preventDefault();
         }
 
-        if (shortcut.stopPropagation) {
+        // Check stopPropagation (default false)
+        if (options.stopPropagation) {
           event.stopPropagation();
         }
 
@@ -103,9 +105,6 @@ export function Shortcut({ children }: ShortcutProps): React.ReactElement {
 /**
  * Hook to access the Shortcut context.
  * Must be used within a Shortcut.
- *
- * @returns The Shortcut context value
- * @throws Error if used outside of Shortcut
  */
 export function useShortcutContext(): ShortcutContextValue {
   const context = useContext(ShortcutContext);

@@ -43,37 +43,18 @@ function resolveModifiers(modifiers: (ModifierKey | 'cmdOrCtrl')[]): ModifierKey
 /**
  * Hook for registering keyboard shortcuts in your React application.
  * Must be used within a ShortcutProvider.
- *
- * @example
- * ```tsx
- * import { useShortcut } from 'ctrl-k';
- *
- * function SearchModal() {
- *   const [isOpen, setIsOpen] = useState(false);
- *
- *   // Open search modal with Cmd+K (macOS) or Ctrl+K (Windows/Linux)
- *   useShortcut({
- *     key: 'k',
- *     modifiers: ['cmdOrCtrl'],
- *     handler: () => setIsOpen(true),
- *   });
- *
- *   // Close modal with Escape
- *   useShortcut({
- *     key: 'Escape',
- *     handler: () => setIsOpen(false),
- *     enabled: isOpen,
- *   });
- *
- *   return isOpen ? <div>Search Modal</div> : null;
- * }
- * ```
  */
-export function useShortcut(options: UseShortcutOptions): void {
-  const { key, modifiers = [], handler, preventDefault = true, stopPropagation = false, enabled = true } = options;
-
+export function useShortcut({ key, modifiers = [], handler, options = {} }: UseShortcutOptions): void {
   const context = useShortcutContext();
   const id = useId();
+
+  // Destructure options with defaults to ensure stable dependencies
+  const {
+    preventDefault = true,
+    stopPropagation = false,
+    enabled = true,
+    ref
+  } = options;
 
   // Memoize the handler to avoid unnecessary re-registrations
   const stableHandler = useCallback(
@@ -90,13 +71,16 @@ export function useShortcut(options: UseShortcutOptions): void {
       key,
       modifiers: resolvedModifiers,
       handler: stableHandler,
-      preventDefault,
-      stopPropagation,
-      enabled,
+      options: {
+        preventDefault,
+        stopPropagation,
+        enabled,
+        ref
+      }
     });
 
     return () => {
       context.unregisterShortcut(id);
     };
-  }, [context, id, key, modifiers, stableHandler, preventDefault, stopPropagation, enabled]);
+  }, [context, id, key, modifiers, stableHandler, preventDefault, stopPropagation, enabled, ref]);
 }

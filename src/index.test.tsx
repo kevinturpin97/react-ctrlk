@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
-import { ShortcutProvider, useShortcut, useShortcutContext } from './index';
+import { Shortcut, useShortcut, useShortcutContext } from './index';
 
 afterEach(() => {
   cleanup();
 });
 
-describe('ShortcutProvider', () => {
+describe('Shortcut', () => {
   it('renders children correctly', () => {
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <div data-testid="child">Hello</div>
-      </ShortcutProvider>
+      </Shortcut>
     );
     expect(screen.getByTestId('child')).toBeInTheDocument();
   });
@@ -25,9 +25,9 @@ describe('ShortcutProvider', () => {
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <ContextConsumer />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     expect(screen.getByTestId('consumer')).toHaveTextContent('has-context');
@@ -35,7 +35,7 @@ describe('ShortcutProvider', () => {
 });
 
 describe('useShortcutContext', () => {
-  it('throws error when used outside of ShortcutProvider', () => {
+  it('throws error when used outside of Shortcut', () => {
     function TestComponent() {
       useShortcutContext();
       return null;
@@ -45,7 +45,7 @@ describe('useShortcutContext', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     expect(() => render(<TestComponent />)).toThrow(
-      'useShortcutContext must be used within a ShortcutProvider'
+      'useShortcutContext must be used within a Shortcut'
     );
 
     consoleSpy.mockRestore();
@@ -65,9 +65,9 @@ describe('useShortcut', () => {
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     fireEvent.keyDown(document, { key: 'k' });
@@ -86,9 +86,9 @@ describe('useShortcut', () => {
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     fireEvent.keyDown(document, { key: 'j' });
@@ -108,9 +108,9 @@ describe('useShortcut', () => {
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     // Should not trigger without ctrl
@@ -118,7 +118,7 @@ describe('useShortcut', () => {
     expect(handler).not.toHaveBeenCalled();
 
     // Should trigger with ctrl
-    fireEvent.keyDown(document, { key: 'k', Shortcutey: true });
+    fireEvent.keyDown(document, { key: 'k', ctrlKey: true });
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
@@ -135,9 +135,9 @@ describe('useShortcut', () => {
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     // Should not trigger without meta
@@ -156,15 +156,15 @@ describe('useShortcut', () => {
       useShortcut({
         key: 'k',
         handler,
-        enabled: false,
+        options: { enabled: false },
       });
       return <div data-testid="test">Test</div>;
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     fireEvent.keyDown(document, { key: 'k' });
@@ -183,9 +183,9 @@ describe('useShortcut', () => {
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     const event = new KeyboardEvent('keydown', { key: 'k', bubbles: true });
@@ -203,15 +203,15 @@ describe('useShortcut', () => {
       useShortcut({
         key: 'k',
         handler,
-        preventDefault: false,
+        options: { preventDefault: false },
       });
       return <div data-testid="test">Test</div>;
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     const event = new KeyboardEvent('keydown', { key: 'k', bubbles: true });
@@ -229,15 +229,15 @@ describe('useShortcut', () => {
       useShortcut({
         key: 'k',
         handler,
-        stopPropagation: true,
+        options: { stopPropagation: true },
       });
       return <div data-testid="test">Test</div>;
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     const event = new KeyboardEvent('keydown', { key: 'k', bubbles: true });
@@ -265,9 +265,9 @@ describe('useShortcut', () => {
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     fireEvent.keyDown(document, { key: 'k' });
@@ -284,9 +284,9 @@ describe('useShortcut', () => {
 
     function TestComponent({ show }: { show: boolean }) {
       return (
-        <ShortcutProvider>
+        <Shortcut>
           {show && <ShortcutComponent handler={handler} />}
-        </ShortcutProvider>
+        </Shortcut>
       );
     }
 
@@ -323,9 +323,9 @@ describe('useShortcut', () => {
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     fireEvent.keyDown(document, { key: 'k' });
@@ -344,9 +344,9 @@ describe('useShortcut', () => {
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     fireEvent.keyDown(document, { key: 'Escape' });
@@ -361,7 +361,7 @@ describe('useShortcut', () => {
       useShortcut({
         key: 'k',
         handler,
-        enabled,
+        options: { enabled },
       });
       return (
         <button data-testid="toggle" onClick={() => setEnabled(!enabled)}>
@@ -371,9 +371,9 @@ describe('useShortcut', () => {
     }
 
     render(
-      <ShortcutProvider>
+      <Shortcut>
         <TestComponent />
-      </ShortcutProvider>
+      </Shortcut>
     );
 
     // Should trigger when enabled
@@ -392,6 +392,49 @@ describe('useShortcut', () => {
 
     // Should trigger again when re-enabled
     fireEvent.keyDown(document, { key: 'k' });
+    expect(handler).toHaveBeenCalledTimes(2);
+  });
+
+  it('scopes shortcut to specific element when ref is provided', () => {
+    const handler = vi.fn();
+
+    function TestComponent() {
+      const divRef = useRef<HTMLDivElement>(null);
+      useShortcut({
+        key: 'k',
+        handler,
+        options: { ref: divRef },
+      });
+
+      return (
+        <div>
+          <div data-testid="target-container" ref={divRef} tabIndex={0}>
+             <input data-testid="inner-input" />
+             Inner Content
+          </div>
+          <div data-testid="outside-container" tabIndex={0}>
+             Outside Content
+          </div>
+        </div>
+      );
+    }
+
+    render(
+      <Shortcut>
+        <TestComponent />
+      </Shortcut>
+    );
+
+    // Trigger inside
+    fireEvent.keyDown(screen.getByTestId('inner-input'), { key: 'k', bubbles: true });
+    expect(handler).toHaveBeenCalledTimes(1);
+
+    // Trigger on container
+    fireEvent.keyDown(screen.getByTestId('target-container'), { key: 'k', bubbles: true });
+    expect(handler).toHaveBeenCalledTimes(2);
+
+    // Trigger outside
+    fireEvent.keyDown(screen.getByTestId('outside-container'), { key: 'k', bubbles: true });
     expect(handler).toHaveBeenCalledTimes(2);
   });
 });
