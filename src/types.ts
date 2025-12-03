@@ -38,9 +38,9 @@ export interface KeyboardShortcut {
 }
 
 /**
- * Context value provided by CtrlKProvider
+ * Context value provided by ShortcutProvider
  */
-export interface CtrlKContextValue {
+export interface ShortcutContextValue {
   /**
    * Register a keyboard shortcut
    */
@@ -56,9 +56,9 @@ export interface CtrlKContextValue {
 }
 
 /**
- * Props for the CtrlKProvider component
+ * Props for the ShortcutProvider component
  */
-export interface CtrlKProviderProps {
+export interface ShortcutProviderProps {
   /**
    * Children to render within the provider
    */
@@ -66,9 +66,9 @@ export interface CtrlKProviderProps {
 }
 
 /**
- * Options for the useCtrlK hook
+ * Options for the useShortcut hook
  */
-export interface UseCtrlKOptions {
+export interface UseShortcutOptions {
   /**
    * The key to listen for (e.g., 'k', 'p', 'Enter', 'Escape')
    */

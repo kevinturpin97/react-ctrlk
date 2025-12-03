@@ -24,14 +24,14 @@ pnpm add react-ctrlk
 ## Quick Start
 
 ```tsx
-import { CtrlKProvider, useCtrlK } from 'react-ctrlk';
+import { Shortcut, useShortcut } from 'react-ctrlk';
 import { useState } from 'react';
 
 function App() {
   return (
-    <CtrlKProvider>
+    <Shortcut>
       <SearchModal />
-    </CtrlKProvider>
+    </Shortcut>
   );
 }
 
@@ -39,14 +39,14 @@ function SearchModal() {
   const [isOpen, setIsOpen] = useState(false);
 
   // Open search modal with Cmd+K (macOS) or Ctrl+K (Windows/Linux)
-  useCtrlK({
+  useShortcut({
     key: 'k',
     modifiers: ['cmdOrCtrl'],
     handler: () => setIsOpen(true),
   });
 
   // Close modal with Escape
-  useCtrlK({
+  useShortcut({
     key: 'Escape',
     handler: () => setIsOpen(false),
     enabled: isOpen, // Only listen when modal is open
@@ -64,23 +64,23 @@ function SearchModal() {
 
 ## API
 
-### `<CtrlKProvider>`
+### `<Shortcut>`
 
 Wrap your application or a portion of it with this provider to enable keyboard shortcuts.
 
 ```tsx
-import { CtrlKProvider } from 'react-ctrlk';
+import { Shortcut } from 'react-ctrlk';
 
 function App() {
   return (
-    <CtrlKProvider>
+    <Shortcut>
       <YourApp />
-    </CtrlKProvider>
+    </Shortcut>
   );
 }
 ```
 
-### `useCtrlK(options)`
+### `useShortcut(options)`
 
 Hook for registering keyboard shortcuts.
 
@@ -103,15 +103,15 @@ Hook for registering keyboard shortcuts.
 - `'shift'` - Shift key
 - `'cmdOrCtrl'` - Meta on macOS, Ctrl on Windows/Linux (recommended for cross-platform shortcuts)
 
-### `useCtrlKContext()`
+### `useShortcutContext()`
 
 Hook to access the underlying context for advanced use cases.
 
 ```tsx
-import { useCtrlKContext } from 'react-ctrlk';
+import { useShortcutContext } from 'react-ctrlk';
 
 function MyComponent() {
-  const { registerShortcut, unregisterShortcut, setShortcutEnabled } = useCtrlKContext();
+  const { registerShortcut, unregisterShortcut, setShortcutEnabled } = useShortcutContext();
   
   // Use these functions for programmatic control
 }
@@ -125,13 +125,13 @@ function MyComponent() {
 function CommandPalette() {
   const [isOpen, setIsOpen] = useState(false);
 
-  useCtrlK({
+  useShortcut({
     key: 'k',
     modifiers: ['cmdOrCtrl'],
     handler: () => setIsOpen(true),
   });
 
-  useCtrlK({
+  useShortcut({
     key: 'Escape',
     handler: () => setIsOpen(false),
     enabled: isOpen,
@@ -145,19 +145,19 @@ function CommandPalette() {
 
 ```tsx
 function Editor() {
-  useCtrlK({
+  useShortcut({
     key: 's',
     modifiers: ['cmdOrCtrl'],
     handler: () => saveDocument(),
   });
 
-  useCtrlK({
+  useShortcut({
     key: 'z',
     modifiers: ['cmdOrCtrl'],
     handler: () => undo(),
   });
 
-  useCtrlK({
+  useShortcut({
     key: 'z',
     modifiers: ['cmdOrCtrl', 'shift'],
     handler: () => redo(),
@@ -169,7 +169,7 @@ function Editor() {
 
 ```tsx
 function EditableContent({ isEditing }) {
-  useCtrlK({
+  useShortcut({
     key: 'Enter',
     modifiers: ['cmdOrCtrl'],
     handler: () => submitContent(),
@@ -184,11 +184,11 @@ The package includes TypeScript definitions. All types are exported:
 
 ```tsx
 import type { 
-  UseCtrlKOptions, 
+  useShortcutOptions, 
   KeyboardShortcut, 
   ModifierKey,
   CtrlKContextValue,
-  CtrlKProviderProps
+  ShortcutProps
 } from 'react-ctrlk';
 ```
 

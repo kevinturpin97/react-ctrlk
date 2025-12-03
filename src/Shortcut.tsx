@@ -1,26 +1,26 @@
 import { createContext, useCallback, useContext, useEffect, useRef } from 'react';
-import type { CtrlKContextValue, CtrlKProviderProps, KeyboardShortcut } from './types';
+import type { ShortcutContextValue, ShortcutProviderProps, KeyboardShortcut } from './types';
 
-const CtrlKContext = createContext<CtrlKContextValue | null>(null);
+const ShortcutContext = createContext<ShortcutContextValue | null>(null);
 
 /**
  * Provider component that enables keyboard shortcut functionality.
- * Wrap your application or a portion of it with this provider to use the useCtrlK hook.
+ * Wrap your application or a portion of it with this provider to use the useShortcut hook.
  *
  * @example
  * ```tsx
- * import { CtrlKProvider } from 'ctrl-k';
+ * import { ShortcutProvider } from 'ctrl-k';
  *
  * function App() {
  *   return (
- *     <CtrlKProvider>
+ *     <ShortcutProvider>
  *       <YourApp />
- *     </CtrlKProvider>
+ *     </ShortcutProvider>
  *   );
  * }
  * ```
  */
-export function CtrlKProvider({ children }: CtrlKProviderProps): React.ReactElement {
+export function ShortcutProvider({ children }: ShortcutProviderProps): React.ReactElement {
   const shortcutsRef = useRef<Map<string, KeyboardShortcut>>(new Map());
 
   const registerShortcut = useCallback((id: string, shortcut: KeyboardShortcut) => {
@@ -87,32 +87,32 @@ export function CtrlKProvider({ children }: CtrlKProviderProps): React.ReactElem
     };
   }, []);
 
-  const contextValue: CtrlKContextValue = {
+  const contextValue: ShortcutContextValue = {
     registerShortcut,
     unregisterShortcut,
     setShortcutEnabled,
   };
 
   return (
-    <CtrlKContext.Provider value={contextValue}>
+    <ShortcutContext.Provider value={contextValue}>
       {children}
-    </CtrlKContext.Provider>
+    </ShortcutContext.Provider>
   );
 }
 
 /**
- * Hook to access the CtrlK context.
- * Must be used within a CtrlKProvider.
+ * Hook to access the Shortcut context.
+ * Must be used within a ShortcutProvider.
  *
- * @returns The CtrlK context value
- * @throws Error if used outside of CtrlKProvider
+ * @returns The Shortcut context value
+ * @throws Error if used outside of ShortcutProvider
  */
-export function useCtrlKContext(): CtrlKContextValue {
-  const context = useContext(CtrlKContext);
+export function useShortcutContext(): ShortcutContextValue {
+  const context = useContext(ShortcutContext);
   if (!context) {
-    throw new Error('useCtrlKContext must be used within a CtrlKProvider');
+    throw new Error('useShortcutContext must be used within a ShortcutProvider');
   }
   return context;
 }
 
-export { CtrlKContext };
+export { ShortcutContext };

@@ -2,42 +2,42 @@ import React, { useState } from 'react';
 import { render, screen, fireEvent, cleanup } from '@testing-library/react';
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import '@testing-library/jest-dom/vitest';
-import { CtrlKProvider, useCtrlK, useCtrlKContext } from './index';
+import { ShortcutProvider, useShortcut, useShortcutContext } from './index';
 
 afterEach(() => {
   cleanup();
 });
 
-describe('CtrlKProvider', () => {
+describe('ShortcutProvider', () => {
   it('renders children correctly', () => {
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <div data-testid="child">Hello</div>
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
     expect(screen.getByTestId('child')).toBeInTheDocument();
   });
 
   it('provides context to children', () => {
     function ContextConsumer() {
-      const context = useCtrlKContext();
+      const context = useShortcutContext();
       return <div data-testid="consumer">{context ? 'has-context' : 'no-context'}</div>;
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <ContextConsumer />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     expect(screen.getByTestId('consumer')).toHaveTextContent('has-context');
   });
 });
 
-describe('useCtrlKContext', () => {
-  it('throws error when used outside of CtrlKProvider', () => {
+describe('useShortcutContext', () => {
+  it('throws error when used outside of ShortcutProvider', () => {
     function TestComponent() {
-      useCtrlKContext();
+      useShortcutContext();
       return null;
     }
 
@@ -45,19 +45,19 @@ describe('useCtrlKContext', () => {
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     expect(() => render(<TestComponent />)).toThrow(
-      'useCtrlKContext must be used within a CtrlKProvider'
+      'useShortcutContext must be used within a ShortcutProvider'
     );
 
     consoleSpy.mockRestore();
   });
 });
 
-describe('useCtrlK', () => {
+describe('useShortcut', () => {
   it('calls handler when matching key is pressed', () => {
     const handler = vi.fn();
 
     function TestComponent() {
-      useCtrlK({
+      useShortcut({
         key: 'k',
         handler,
       });
@@ -65,9 +65,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     fireEvent.keyDown(document, { key: 'k' });
@@ -78,7 +78,7 @@ describe('useCtrlK', () => {
     const handler = vi.fn();
 
     function TestComponent() {
-      useCtrlK({
+      useShortcut({
         key: 'k',
         handler,
       });
@@ -86,9 +86,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     fireEvent.keyDown(document, { key: 'j' });
@@ -99,7 +99,7 @@ describe('useCtrlK', () => {
     const handler = vi.fn();
 
     function TestComponent() {
-      useCtrlK({
+      useShortcut({
         key: 'k',
         modifiers: ['ctrl'],
         handler,
@@ -108,9 +108,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     // Should not trigger without ctrl
@@ -118,7 +118,7 @@ describe('useCtrlK', () => {
     expect(handler).not.toHaveBeenCalled();
 
     // Should trigger with ctrl
-    fireEvent.keyDown(document, { key: 'k', ctrlKey: true });
+    fireEvent.keyDown(document, { key: 'k', Shortcutey: true });
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
@@ -126,7 +126,7 @@ describe('useCtrlK', () => {
     const handler = vi.fn();
 
     function TestComponent() {
-      useCtrlK({
+      useShortcut({
         key: 'k',
         modifiers: ['meta'],
         handler,
@@ -135,9 +135,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     // Should not trigger without meta
@@ -153,7 +153,7 @@ describe('useCtrlK', () => {
     const handler = vi.fn();
 
     function TestComponent() {
-      useCtrlK({
+      useShortcut({
         key: 'k',
         handler,
         enabled: false,
@@ -162,9 +162,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     fireEvent.keyDown(document, { key: 'k' });
@@ -175,7 +175,7 @@ describe('useCtrlK', () => {
     const handler = vi.fn();
 
     function TestComponent() {
-      useCtrlK({
+      useShortcut({
         key: 'k',
         handler,
       });
@@ -183,9 +183,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     const event = new KeyboardEvent('keydown', { key: 'k', bubbles: true });
@@ -200,7 +200,7 @@ describe('useCtrlK', () => {
     const handler = vi.fn();
 
     function TestComponent() {
-      useCtrlK({
+      useShortcut({
         key: 'k',
         handler,
         preventDefault: false,
@@ -209,9 +209,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     const event = new KeyboardEvent('keydown', { key: 'k', bubbles: true });
@@ -226,7 +226,7 @@ describe('useCtrlK', () => {
     const handler = vi.fn();
 
     function TestComponent() {
-      useCtrlK({
+      useShortcut({
         key: 'k',
         handler,
         stopPropagation: true,
@@ -235,9 +235,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     const event = new KeyboardEvent('keydown', { key: 'k', bubbles: true });
@@ -253,11 +253,11 @@ describe('useCtrlK', () => {
     const handler2 = vi.fn();
 
     function TestComponent() {
-      useCtrlK({
+      useShortcut({
         key: 'k',
         handler: handler1,
       });
-      useCtrlK({
+      useShortcut({
         key: 'p',
         handler: handler2,
       });
@@ -265,9 +265,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     fireEvent.keyDown(document, { key: 'k' });
@@ -284,14 +284,14 @@ describe('useCtrlK', () => {
 
     function TestComponent({ show }: { show: boolean }) {
       return (
-        <CtrlKProvider>
+        <ShortcutProvider>
           {show && <ShortcutComponent handler={handler} />}
-        </CtrlKProvider>
+        </ShortcutProvider>
       );
     }
 
     function ShortcutComponent({ handler }: { handler: () => void }) {
-      useCtrlK({
+      useShortcut({
         key: 'k',
         handler,
       });
@@ -315,7 +315,7 @@ describe('useCtrlK', () => {
     const handler = vi.fn();
 
     function TestComponent() {
-      useCtrlK({
+      useShortcut({
         key: 'K',
         handler,
       });
@@ -323,9 +323,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     fireEvent.keyDown(document, { key: 'k' });
@@ -336,7 +336,7 @@ describe('useCtrlK', () => {
     const handler = vi.fn();
 
     function TestComponent() {
-      useCtrlK({
+      useShortcut({
         key: 'Escape',
         handler,
       });
@@ -344,9 +344,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     fireEvent.keyDown(document, { key: 'Escape' });
@@ -358,7 +358,7 @@ describe('useCtrlK', () => {
 
     function TestComponent() {
       const [enabled, setEnabled] = useState(true);
-      useCtrlK({
+      useShortcut({
         key: 'k',
         handler,
         enabled,
@@ -371,9 +371,9 @@ describe('useCtrlK', () => {
     }
 
     render(
-      <CtrlKProvider>
+      <ShortcutProvider>
         <TestComponent />
-      </CtrlKProvider>
+      </ShortcutProvider>
     );
 
     // Should trigger when enabled

@@ -1,9 +1,9 @@
-export { CtrlKProvider, useCtrlKContext, CtrlKContext } from './CtrlKProvider';
-export { useCtrlK } from './useCtrlK';
+export { ShortcutProvider, useShortcutContext, ShortcutContext } from './Shortcut';
+export { useShortcut } from './useShortcut';
 export type {
   ModifierKey,
   KeyboardShortcut,
-  CtrlKContextValue,
-  CtrlKProviderProps,
-  UseCtrlKOptions,
+  ShortcutContextValue,
+  ShortcutProviderProps,
+  UseShortcutOptions,
 } from './types';

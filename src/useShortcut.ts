@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useId } from 'react';
-import { useCtrlKContext } from './CtrlKProvider';
-import type { ModifierKey, UseCtrlKOptions } from './types';
+import { useShortcutContext } from './Shortcut';
+import type { ModifierKey, UseShortcutOptions } from './types';
 
 // Extend Navigator interface to include userAgentData (modern browsers)
 interface NavigatorUAData {
@@ -42,24 +42,24 @@ function resolveModifiers(modifiers: (ModifierKey | 'cmdOrCtrl')[]): ModifierKey
 
 /**
  * Hook for registering keyboard shortcuts in your React application.
- * Must be used within a CtrlKProvider.
+ * Must be used within a ShortcutProvider.
  *
  * @example
  * ```tsx
- * import { useCtrlK } from 'ctrl-k';
+ * import { useShortcut } from 'ctrl-k';
  *
  * function SearchModal() {
  *   const [isOpen, setIsOpen] = useState(false);
  *
  *   // Open search modal with Cmd+K (macOS) or Ctrl+K (Windows/Linux)
- *   useCtrlK({
+ *   useShortcut({
  *     key: 'k',
  *     modifiers: ['cmdOrCtrl'],
  *     handler: () => setIsOpen(true),
  *   });
  *
  *   // Close modal with Escape
- *   useCtrlK({
+ *   useShortcut({
  *     key: 'Escape',
  *     handler: () => setIsOpen(false),
  *     enabled: isOpen,
@@ -69,10 +69,10 @@ function resolveModifiers(modifiers: (ModifierKey | 'cmdOrCtrl')[]): ModifierKey
  * }
  * ```
  */
-export function useCtrlK(options: UseCtrlKOptions): void {
+export function useShortcut(options: UseShortcutOptions): void {
   const { key, modifiers = [], handler, preventDefault = true, stopPropagation = false, enabled = true } = options;
 
-  const context = useCtrlKContext();
+  const context = useShortcutContext();
   const id = useId();
 
   // Memoize the handler to avoid unnecessary re-registrations
