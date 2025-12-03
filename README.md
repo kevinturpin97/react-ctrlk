@@ -49,7 +49,9 @@ function SearchModal() {
   useShortcut({
     key: 'Escape',
     handler: () => setIsOpen(false),
-    enabled: isOpen, // Only listen when modal is open
+    options: {
+      enabled: isOpen, // Only listen when modal is open
+    },
   });
 
   if (!isOpen) return null;
@@ -86,14 +88,21 @@ Hook for registering keyboard shortcuts.
 
 #### Options
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `key` | `string` | (required) | The key to listen for (e.g., `'k'`, `'Escape'`, `'Enter'`) |
-| `modifiers` | `Array<'ctrl' \| 'meta' \| 'alt' \| 'shift' \| 'cmdOrCtrl'>` | `[]` | Modifier keys that must be pressed |
-| `handler` | `(event: KeyboardEvent) => void` | (required) | Callback when shortcut is triggered |
-| `preventDefault` | `boolean` | `true` | Whether to prevent default browser behavior |
-| `stopPropagation` | `boolean` | `false` | Whether to stop event propagation |
-| `enabled` | `boolean` | `true` | Whether the shortcut is currently enabled |
+| Option       | Type                                              | Default       | Description                                                                                       |
+|--------------|---------------------------------------------------|---------------|---------------------------------------------------------------------------------------------------|
+| `key`        | `string`                                          | (required)    | The key to listen for (e.g., `'k'`, `'Escape'`, `'Enter'`)                                        |
+| `modifiers`  | `Array<'ctrl' \| 'meta' \| 'alt' \| 'shift' \| 'cmdOrCtrl'>` | `[]` | Modifier keys that must be pressed                                                              |
+| `handler`    | `(event: KeyboardEvent) => void`                  | (required)    | Callback when shortcut is triggered                                                              |
+| `options`    | `{ preventDefault?: boolean; stopPropagation?: boolean; enabled?: boolean; ref?: React.RefObject<HTMLElement \| null> }` | `{}`  | Additional configuration for the shortcut behavior                                               |
+
+##### `options`
+
+| Property         | Type                 | Default    | Description                                                                                    |
+|------------------|----------------------|------------|------------------------------------------------------------------------------------------------|
+| `preventDefault` | `boolean`           | `true`     | Whether to prevent default browser behavior                                                  |
+| `stopPropagation`| `boolean`           | `false`    | Whether to stop event propagation                                                             |
+| `enabled`        | `boolean`           | `true`     | Whether the shortcut is currently enabled                                                    |
+| `ref`            | `React.RefObject<HTMLElement \| null>` | `undefined` | Optional ref to scope the shortcut to a specific element. Triggered only when targeting within |
 
 #### Modifier Keys
 
@@ -134,10 +143,35 @@ function CommandPalette() {
   useShortcut({
     key: 'Escape',
     handler: () => setIsOpen(false),
-    enabled: isOpen,
+    options: {
+      enabled: isOpen,
+    },
   });
 
   // ... render command palette
+}
+```
+
+### Scoped Shortcuts with `ref`
+
+```tsx
+function SearchComponent() {
+  const inputRef = useRef(null);
+
+  useShortcut({
+    key: 'k',
+    handler: () => alert("Triggered inside!"),
+    options: {
+      ref: inputRef,
+    },
+  });
+
+  return (
+    <div>
+      <input type="text" placeholder="Focus here to trigger the shortcut" ref={inputRef} />
+      <p>Press "k" while focused on the input!</p>
+    </div>
+  );
 }
 ```
 
@@ -173,7 +207,9 @@ function EditableContent({ isEditing }) {
     key: 'Enter',
     modifiers: ['cmdOrCtrl'],
     handler: () => submitContent(),
-    enabled: isEditing, // Only active when editing
+    options: {
+      enabled: isEditing, // Only active when editing
+    },
   });
 }
 ```
